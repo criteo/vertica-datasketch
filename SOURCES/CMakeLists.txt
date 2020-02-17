@@ -44,9 +44,6 @@ set(DATASKETCHES_LIB_DIR ${install_dir}/lib64)
 
 set(CMAKE_CXX_FLAGS "-Wall -O3 -std=c++11 -Wno-unused-value")
 
-set(VERTICA_INCLUDE ${SDK_HOME}/include)
-include_directories(${VERTICA_INCLUDE} include src)
-
 if(DEBUG_BUILD)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
@@ -65,6 +62,9 @@ if (BUILD_VERTICA_LIB)
   if(NOT EXISTS ${SDK_HOME})
     message(FATAL_ERROR "Could not build. No SDK found at ${SDK_HOME} (maybe retry with -DSDK_HOME=<sdk_path>).")
   endif()
+
+  set(VERTICA_INCLUDE ${SDK_HOME}/include)
+  include_directories(${VERTICA_INCLUDE} include src)
 
   # datasketches SRC
   set(VERTICA_SRC ${VERTICA_INCLUDE}/Vertica.h ${VERTICA_INCLUDE}/BuildInfo.h ${VERTICA_INCLUDE}/Vertica.cpp)
