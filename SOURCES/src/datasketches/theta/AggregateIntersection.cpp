@@ -76,7 +76,7 @@ class ThetaSketchAggregateIntersection : public ThetaSketchAggregateFunction {
             }
 
             do {
-                vbool &initialized = aggs.getBoolRef(1);
+                initialized = aggsOther.getBoolRef(1);
                 if (initialized) {
                     auto sketch = compact_theta_sketch_custom::deserialize(aggsOther.getStringRef(0).data(),
                                                                     aggsOther.getStringRef(0).length(),
