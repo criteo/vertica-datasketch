@@ -28,7 +28,7 @@ SET_DIRECTORY_PROPERTIES(PROPERTIES EP_BASE ${CMAKE_BINARY_DIR}/third_party)
 ExternalProject_Add(
         datasketches
         # Using an URL as you would need a public key for GitHub otherwise.
-        URL https://github.com/apache/incubator-datasketches-cpp/archive/bfcc54d598cd9f72186596002e9ee4883ebd8ce6.zip
+        URL https://github.com/apache/incubator-datasketches-cpp/archive/08f7e2f3060828bd53eae78457ca9607b3b90a0d.zip
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
 )
 ExternalProject_Get_Property(datasketches install_dir)
