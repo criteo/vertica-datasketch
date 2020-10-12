@@ -83,7 +83,7 @@ class ThetaSketchAggregateCreateVarcharFactory : public ThetaSketchAggregateFunc
 };
 
 
-class ThetaSketchAggregateCreateVarbinaryFactory : public ThetaSketchAggregateFunctionFactory {
+class ThetaSketchAggregateCreateLongVarbinaryFactory : public ThetaSketchAggregateFunctionFactory {
     virtual void getPrototype(ServerInterface &srvfloaterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
         argTypes.addLongVarbinary();
         returnType.addLongVarbinary();
@@ -95,5 +95,4 @@ class ThetaSketchAggregateCreateVarbinaryFactory : public ThetaSketchAggregateFu
 };
 
 RegisterFactory(ThetaSketchAggregateCreateVarcharFactory);
-RegisterFactory(ThetaSketchAggregateCreateVarbinaryFactory);
-
+RegisterFactory(ThetaSketchAggregateCreateLongVarbinaryFactory);
