@@ -77,8 +77,8 @@ class ThetaSketchAggregateUnion : public ThetaSketchAggregateFunction {
 
 class ThetaSketchAggregateUnionFactory : public ThetaSketchAggregateFunctionFactory {
     virtual void getPrototype(ServerInterface &srvfloaterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
-        argTypes.addVarbinary();
-        returnType.addVarbinary();
+        argTypes.addLongVarbinary();
+        returnType.addLongVarbinary();
     }
 
     virtual AggregateFunction *createAggregateFunction(ServerInterface &srvfloaterface) {
@@ -87,4 +87,3 @@ class ThetaSketchAggregateUnionFactory : public ThetaSketchAggregateFunctionFact
 };
 
 RegisterFactory(ThetaSketchAggregateUnionFactory);
-

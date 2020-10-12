@@ -105,13 +105,13 @@ class ThetaSketchAggregateIntersectionFactory : public ThetaSketchAggregateFunct
                                       const SizedColumnTypes &inputTypes,
                                       SizedColumnTypes &intermediateTypeMetaData) {
         uint8_t logK = readLogK(srvInterface);
-        intermediateTypeMetaData.addVarbinary(quickSelectSketchMinSize(logK));
+        intermediateTypeMetaData.addLongVarbinary(quickSelectSketchMinSize(logK));
         intermediateTypeMetaData.addBool();
     }
 
     virtual void getPrototype(ServerInterface &srvfloaterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
-        argTypes.addVarbinary();
-        returnType.addVarbinary();
+        argTypes.addLongVarbinary();
+        returnType.addLongVarbinary();
     }
 
     virtual AggregateFunction *createAggregateFunction(ServerInterface &srvfloaterface) {
