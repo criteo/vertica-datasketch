@@ -96,3 +96,14 @@ class ThetaSketchAggregateCreateLongVarbinaryFactory : public ThetaSketchAggrega
 
 RegisterFactory(ThetaSketchAggregateCreateVarcharFactory);
 RegisterFactory(ThetaSketchAggregateCreateLongVarbinaryFactory);
+
+RegisterLibrary(
+    "Criteo",// author
+    "", // lib_build_tag
+    "0.1",// lib_version
+    "9.2.1",// lib_sdk_version
+    "https://github.com/criteo/vertica-datasketch", // URL
+    "Wrapper around incubator-datasketches-cpp to make it usable in Vertica", // description
+    "", // licenses required
+    ""  // signature
+);
