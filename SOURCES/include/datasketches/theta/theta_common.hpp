@@ -83,6 +83,11 @@ protected:
     uint8_t logK;
     uint64_t seed;
 
+    long countCombine{0};
+    long countInitAggregate{0};
+    long countAggregate{0};
+    long countTerminate{0};
+
 public:
     virtual void setup(ServerInterface &srvInterface, const SizedColumnTypes &argTypes) {
         this->logK = readLogK(srvInterface);
@@ -91,6 +96,7 @@ public:
 
     virtual void initAggregate(ServerInterface &srvInterface, IntermediateAggs &aggs) {
         try {
+            countInitAggregate++;
             auto u = theta_union_custom::builder()
                     .set_lg_k(logK)
                     .set_seed(seed)
@@ -107,14 +113,26 @@ public:
                            BlockWriter &resWriter,
                            IntermediateAggs &aggs) override {
         try {
+            countTerminate++;
             const VString &concat = aggs.getStringRef(0);
             VString &result = resWriter.getStringRef();
             result.copy(&concat);
+
+            // Log exported parquet file details to v_monitor.udx_events
+            std::map<std::string, std::string> details;
+            details["combine"] = std::to_string(countCombine);
+            details["initAggregate"] = std::to_string(countInitAggregate);
+            details["aggregate"] = std::to_string(countAggregate);
+            details["terminate"] = std::to_string(countTerminate);
+            srvInterface.logEvent(details);
         } catch (exception &e) {
             // Standard exception. Quit.
             vt_report_error(0, "Exception while computing aggregate output: [%s]", e.what());
         }
     }
 };
+
+virtual void destroy(ServerInterface &srvInterface, const SizedColumnTypes &argTypes) {
+}
 
 #endif //COM_CRITEO_MOAB_DATASKETCHES_VERTICA_H

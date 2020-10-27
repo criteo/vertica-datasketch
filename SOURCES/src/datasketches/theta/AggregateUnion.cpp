@@ -18,6 +18,7 @@ class ThetaSketchAggregateUnion : public ThetaSketchAggregateFunction {
                    BlockReader &argReader,
                    IntermediateAggs &aggs) {
         try {
+            countAggregate++;
             auto u = theta_union_custom::builder()
                     .set_lg_k(logK)
                     .set_seed(seed)
@@ -45,6 +46,7 @@ class ThetaSketchAggregateUnion : public ThetaSketchAggregateFunction {
                          IntermediateAggs &aggs,
                          MultipleIntermediateAggs &aggsOther) override {
         try {
+            countCombine++;
             auto u = theta_union_custom::builder()
                     .set_lg_k(logK)
                     .set_seed(seed)
