@@ -18,6 +18,7 @@ class ThetaSketchAggregateUnion : public ThetaSketchAggregateFunction {
                    BlockReader &argReader,
                    IntermediateAggs &aggs) {
         try {
+            this->countAggregate++;
             auto u = theta_union_custom::builder()
                     .set_lg_k(logK)
                     .set_seed(seed)
@@ -45,6 +46,7 @@ class ThetaSketchAggregateUnion : public ThetaSketchAggregateFunction {
                          IntermediateAggs &aggs,
                          MultipleIntermediateAggs &aggsOther) override {
         try {
+            this->countCombine++;
             auto u = theta_union_custom::builder()
                     .set_lg_k(logK)
                     .set_seed(seed)
@@ -77,8 +79,8 @@ class ThetaSketchAggregateUnion : public ThetaSketchAggregateFunction {
 
 class ThetaSketchAggregateUnionFactory : public ThetaSketchAggregateFunctionFactory {
     virtual void getPrototype(ServerInterface &srvfloaterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
-        argTypes.addVarbinary();
-        returnType.addVarbinary();
+        argTypes.addLongVarbinary();
+        returnType.addLongVarbinary();
     }
 
     virtual AggregateFunction *createAggregateFunction(ServerInterface &srvfloaterface) {
@@ -87,4 +89,3 @@ class ThetaSketchAggregateUnionFactory : public ThetaSketchAggregateFunctionFact
 };
 
 RegisterFactory(ThetaSketchAggregateUnionFactory);
-
