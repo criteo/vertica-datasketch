@@ -6,7 +6,7 @@
 #define DATASKETCHES_LOG_NOMINAL_VALUE_MIN 4
 // Vertica supports maximum 32000000 bytes in a long binary field, hence the limit.
 // https://datasketches.apache.org/docs/Theta/ThetaErrorTable.html
-#define DATASKETCHES_LOG_NOMINAL_VALUE_MAX 24
+#define DATASKETCHES_LOG_NOMINAL_VALUE_MAX 20
 #define DATASKETCHES_SEED_PARAMETER_NAME "seed"
 #define DATASKETCHES_SEED_DEFAULT 9001
 
