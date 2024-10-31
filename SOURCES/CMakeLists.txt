@@ -15,6 +15,21 @@ option(BUILD_VERTICA_TEST_DRIVER "Build a test program to show basic functionali
 option(BUILD_TESTS "Build all tests." OFF)
 
 
+## When building for Vertica 11, you need to set specific defines
+file(READ "/opt/vertica/sdk/include/BuildInfo.h" buildinfosdk)
+# message(${buildinfosdk})
+string(REGEX MATCH "#define[ ]+VERTICA_BUILD_ID_SDK_Version_Major[ ]+([0-9]+)" _ ${buildinfosdk})
+set(ver_major ${CMAKE_MATCH_1})
+message("Version", ${ver_major})
+if (${ver_major} LESS_EQUAL 11)
+  add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+  message("Using CXX11 ABI because Vertica <= 11:", ${ver_major})
+else()
+  message("Not using CXX11 ABI because newer SDK than Vertica 11", ${ver_major})
+endif()
+
+## For Vertica 24, you don't need it.
+
 #############################
 ##  EXTERNAL DEPENDENCIES  ##
 #############################
