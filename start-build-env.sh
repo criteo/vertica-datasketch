@@ -1,13 +1,23 @@
 #!/bin/bash
-docker build -t vertica-builder-ds:local .
+_b_env=${1:-centos8.Dockerfile}
+errout() {
+  _r=$1
+  shift 1;
+  echo $@;
+  exit $_r;
+}
+BUILDER_IMAGE="vertica-builder-ds:local"
+BUILDER_INSTANCE_NAME="vbuilder-datasketches"
+docker build -f ${_b_env} -t ${BUILDER_IMAGE} .
+test -f /opt/vertica/sdk/include/BuildInfo.h || errout 30 "Vertica SDK is missing. Put it in /opt/vertica/sdk so that /opt/vertica/sdk/include/BuildInfo.h exists"
 
 rm -rf build
 mkdir -p build
-docker kill vbuilder-datask || true
+docker kill ${BUILDER_INSTANCE_NAME} || true
 sleep 1
-docker rm vbuilder-datask || true
+docker rm ${BUILDER_INSTANCE_NAME} || true
 sleep 1
-docker run --rm --name vbuilder-datask -v=$PWD/SOURCES:/sources -v=$PWD/build:/build -v=/opt/vertica/sdk:/opt/vertica/sdk  -d vertica-builder-ds:local sleep 3600
-echo "Run docker exec -ti vbuilder-datask bash # now"
+docker run --rm --name ${BUILDER_INSTANCE_NAME} -v=$PWD/SOURCES:/sources -v=$PWD/build:/build -v=/opt/vertica/sdk:/opt/vertica/sdk  -d $BUILDER_IMAGE sleep 3600
+echo "Run docker exec -ti ${BUILDER_INSTANCE_NAME} bash # now"
 echo "Then, you may run the following to build"
 echo "cmake /sources; make clean; make"
