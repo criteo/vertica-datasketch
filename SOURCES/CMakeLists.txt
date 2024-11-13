@@ -88,7 +88,7 @@ if (BUILD_VERTICA_LIB)
   add_library(vertica-datasketches SHARED ${VERTICA_DATASKETCHES_SRC} ${VERTICA_SRC})
   add_dependencies(vertica-datasketches datasketches)
 
-  set_target_properties(vertica-datasketches PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+  set_target_properties(vertica-datasketches PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS}")
   include_directories(${DATASKETCHES_INCLUDE})
 
   # Installation process just copies the binary to Vertica lib folder
