@@ -28,7 +28,9 @@ If you have a Vertica deployment, just get the SDK from `/opt/vertica/sdk`
 
 If you don't have one handy, use:
 
-`docker run --rm opentext/vertica-k8s:24.4.0-0 tar -C /opt/vertica -c -v sdk > /tmp/vertica-sdk.tar`
+```bash
+docker run --rm --entrypoint bash opentext/vertica-k8s:24.4.0-0 -c 'tar -C /opt/vertica -c -v sdk' > /tmp/vertica-sdk.tar
+```
 
 ## Install the Vertica SDK somewhere useful
 
