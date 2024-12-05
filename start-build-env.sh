@@ -17,7 +17,9 @@ docker kill ${BUILDER_INSTANCE_NAME} || true
 sleep 1
 docker rm ${BUILDER_INSTANCE_NAME} || true
 sleep 1
-docker run --rm --name ${BUILDER_INSTANCE_NAME} -v=$PWD/SOURCES:/sources -v=$PWD/build:/build -v=/opt/vertica/sdk:/opt/vertica/sdk  -d $BUILDER_IMAGE sleep 3600
+docker run --rm --name ${BUILDER_INSTANCE_NAME} -v=$PWD/SOURCES:/sources -v=/opt/vertica/sdk:/opt/vertica/sdk  -d $BUILDER_IMAGE sleep 3600
 echo "Run docker exec -ti ${BUILDER_INSTANCE_NAME} bash # now"
 echo "Then, you may run the following to build"
 echo "cmake /sources; make clean; make"
+echo "once it's done, to recover the library, you may run:"
+echo "docker cp ${BUILDER_INSTANCE_NAME}:/build/libvertica-datasketches.so build/"
