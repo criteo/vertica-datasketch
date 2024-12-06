@@ -15,6 +15,27 @@ option(BUILD_VERTICA_TEST_DRIVER "Build a test program to show basic functionali
 option(BUILD_TESTS "Build all tests." OFF)
 
 
+# Here we say where g++ should look for include files
+set(SDK_HOME /opt/vertica/sdk CACHE FILEPATH "Path to the Vertica SDK, by default /opt/vertica/sdk")
+if(NOT EXISTS ${SDK_HOME})
+  message(FATAL_ERROR "Could not build. No SDK found at ${SDK_HOME} (maybe retry with -DSDK_HOME=<sdk_path>).")
+endif()
+set(VERTICA_INCLUDE ${SDK_HOME}/include)
+
+## When building for Vertica 12, you need to set specific defines
+file(READ "${VERTICA_INCLUDE}/BuildInfo.h" buildinfosdk)
+string(REGEX MATCH "#define[ ]+VERTICA_BUILD_ID_SDK_Version_Major[ ]+([0-9]+)" _ ${buildinfosdk})
+set(ver_major ${CMAKE_MATCH_1})
+message("Version", ${ver_major})
+if (${ver_major} LESS_EQUAL 12)
+  add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+  message("Using CXX11 ABI because Vertica <= 12:", ${ver_major})
+else()
+  message("Not using CXX11 ABI because newer SDK than Vertica 12", ${ver_major})
+endif()
+
+## For Vertica 24, you don't need it.
+
 #############################
 ##  EXTERNAL DEPENDENCIES  ##
 #############################
@@ -73,7 +94,7 @@ if (BUILD_VERTICA_LIB)
   add_library(vertica-datasketches SHARED ${VERTICA_DATASKETCHES_SRC} ${VERTICA_SRC})
   add_dependencies(vertica-datasketches datasketches)
 
-  set_target_properties(vertica-datasketches PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+  set_target_properties(vertica-datasketches PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS}")
   include_directories(${DATASKETCHES_INCLUDE})
 
   # Installation process just copies the binary to Vertica lib folder

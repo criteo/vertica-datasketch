@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../../vertica-hll-druid"
+		},
+		{
+			"path": "../../../../../opt/vertica/sdk"
+		},
+		{
+			"path": "../../vertica-hyperloglog"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

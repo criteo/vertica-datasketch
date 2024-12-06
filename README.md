@@ -21,6 +21,45 @@ make
 
 Additional build options can be enabled by runing ccmake.
 
+## How to build with Docker
+## Get the Vertica SDK from a Vertica instance or a Docker image.
+
+If you have a Vertica deployment, just get the SDK from `/opt/vertica/sdk`
+
+If you don't have one handy, use:
+
+```bash
+docker run --rm --entrypoint bash opentext/vertica-k8s:24.4.0-0 -c 'tar -C /opt/vertica -c -v sdk' > /tmp/vertica-sdk.tar
+```
+
+## Install the Vertica SDK somewhere useful
+
+On your dev machine (don't do that on a Vertica server, you'll mess things up)
+
+```bash
+# load the SDK to a dev directory in your home
+mkdir -p ~/dev/vertica-sdks
+cd ~/dev/vertica-sdks
+tar xf /tmp/vertica-sdk.tar
+mv sdk 24.4.0
+# link the expected SDK location to your local SDK copy
+sudo mkdir -p /opt/vertica && sudo chown -R $(id -u) /opt/vertica
+ln -sf ~/dev/vertica-sdks/24.4.0 /opt/vertica/sdk
+```
+
+## Run the build environment
+
+You need Docker and the SDK properly ready in /opt/vertica/sdk. Run `./start-build-env.sh` and then drop to the shell: `docker exec -ti vbuilder-datask bash`
+
+You may then try to build using (inside the container)
+
+```bash
+cd /build
+cmake /sources
+make
+```
+
+
 # Known issues
 In Vertica, each query is given at runtime a pool which depends of the configuration of the database and the context (User, Roles, etc).
 
