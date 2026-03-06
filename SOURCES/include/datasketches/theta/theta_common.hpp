@@ -23,7 +23,7 @@ class ThetaSketchScalarFunctionFactory : public ScalarFunctionFactory {
                                const SizedColumnTypes &inputTypes,
                                SizedColumnTypes &outputTypes) {
         uint8_t logK = readLogK(srvfloaterface);
-        outputTypes.addVarbinary(quickSelectSketchMinSize(logK));
+        outputTypes.addLongVarbinary(quickSelectSketchMinSize(logK));
     }
 
     virtual void getParameterType(ServerInterface &srvInterface,
@@ -49,14 +49,14 @@ class ThetaSketchAggregateFunctionFactory : public AggregateFunctionFactory {
                                       const SizedColumnTypes &inputTypes,
                                       SizedColumnTypes &intermediateTypeMetaData) {
         uint8_t logK = readLogK(srvInterface);
-        intermediateTypeMetaData.addVarbinary(quickSelectSketchMinSize(logK));
+        intermediateTypeMetaData.addLongVarbinary(quickSelectSketchMinSize(logK));
     }
 
     virtual void getReturnType(ServerInterface &srvfloaterface,
                                const SizedColumnTypes &inputTypes,
                                SizedColumnTypes &outputTypes) {
         uint8_t logK = readLogK(srvfloaterface);
-        outputTypes.addVarbinary(quickSelectSketchMinSize(logK));
+        outputTypes.addLongVarbinary(quickSelectSketchMinSize(logK));
     }
 
     virtual void getParameterType(ServerInterface &srvInterface,
@@ -83,14 +83,29 @@ protected:
     uint8_t logK;
     uint64_t seed;
 
+    long countCombine{0};
+    long countInitAggregate{0};
+    long countAggregate{0};
+    long countTerminate{0};
+
 public:
     virtual void setup(ServerInterface &srvInterface, const SizedColumnTypes &argTypes) {
         this->logK = readLogK(srvInterface);
         this->seed = readSeed(srvInterface);
     }
+    virtual void destroy(ServerInterface &srvInterface, const SizedColumnTypes &argTypes) {
+        // Log exported parquet file details to v_monitor.udx_events
+        std::map<std::string, std::string> details;
+        details["combine"] = std::to_string(this->countCombine);
+        details["initAggregate"] = std::to_string(this->countInitAggregate);
+        details["aggregate"] = std::to_string(this->countAggregate);
+        details["terminate"] = std::to_string(this->countTerminate);
+        srvInterface.logEvent(details);
+    }
 
     virtual void initAggregate(ServerInterface &srvInterface, IntermediateAggs &aggs) {
         try {
+            this->countInitAggregate++;
             auto u = theta_union_custom::builder()
                     .set_lg_k(logK)
                     .set_seed(seed)
@@ -107,6 +122,7 @@ public:
                            BlockWriter &resWriter,
                            IntermediateAggs &aggs) override {
         try {
+            this->countTerminate++;
             const VString &concat = aggs.getStringRef(0);
             VString &result = resWriter.getStringRef();
             result.copy(&concat);

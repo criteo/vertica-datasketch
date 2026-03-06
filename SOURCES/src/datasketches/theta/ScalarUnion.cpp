@@ -49,7 +49,7 @@ class ThetaSketchScalarUnionFactory : public ThetaSketchScalarFunctionFactory {
                               ColumnTypes &argTypes,
                               ColumnTypes &returnType) {
         argTypes.addAny();
-        returnType.addVarbinary();
+        returnType.addLongVarbinary();
     }
 };
 

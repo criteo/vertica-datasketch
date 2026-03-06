@@ -45,7 +45,7 @@ class ThetaSketchScalarIntersectionFactory : public ThetaSketchScalarFunctionFac
                               ColumnTypes &argTypes,
                               ColumnTypes &returnType) {
         argTypes.addAny();
-        returnType.addVarbinary();
+        returnType.addLongVarbinary();
     }
 };
 

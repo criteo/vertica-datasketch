@@ -38,7 +38,7 @@ class ThetaSketchGetEstimateFactory : public ScalarFunctionFactory {
     virtual void getPrototype(ServerInterface &interface,
                               ColumnTypes &argTypes,
                               ColumnTypes &returnType) {
-        argTypes.addVarbinary();
+        argTypes.addLongVarbinary();
         returnType.addFloat();
     }
 
