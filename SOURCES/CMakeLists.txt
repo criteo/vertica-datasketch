@@ -40,24 +40,21 @@ endif()
 ##  EXTERNAL DEPENDENCIES  ##
 #############################
 
-include(ExternalProject)
+set(DATASKETCHES_SOURCE_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/third_party/datasketches-cpp"
+    CACHE PATH "Path to local datasketches-cpp sources")
 
-# Set default ExternalProject root directory
-# Using EP_BASE also indicates to cmake comprehenseible directory structure.
-SET_DIRECTORY_PROPERTIES(PROPERTIES EP_BASE ${CMAKE_BINARY_DIR}/third_party)
+if(NOT EXISTS "${DATASKETCHES_SOURCE_DIR}/common/include")
+  message(FATAL_ERROR
+    "datasketches-cpp was not found at ${DATASKETCHES_SOURCE_DIR}. "
+    "Put the sources into SOURCES/third_party/datasketches-cpp or pass "
+    "-DDATASKETCHES_SOURCE_DIR=<path>.")
+endif()
 
-ExternalProject_Add(
-        datasketches
-        # Using an URL as you would need a public key for GitHub otherwise.
-        URL https://github.com/apache/incubator-datasketches-cpp/archive/2.1.0-incubating.zip
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DBUILD_TESTS=OFF
+set(DATASKETCHES_INCLUDE
+    ${DATASKETCHES_SOURCE_DIR}/common/include
+    ${DATASKETCHES_SOURCE_DIR}/theta/include
 )
-ExternalProject_Get_Property(datasketches install_dir)
-ExternalProject_Get_Property(datasketches source_dir)
-# Need to include common header which aren't included even though they include *_impl.hpp
-# headers which requires them.
-set(DATASKETCHES_INCLUDE ${install_dir}/include/DataSketches ${source_dir}/common/include)
-set(DATASKETCHES_LIB_DIR ${install_dir}/lib64)
 
 #####################
 ##  COMPILE FLAGS  ##
@@ -92,7 +89,6 @@ if (BUILD_VERTICA_LIB)
   file(GLOB VERTICA_DATASKETCHES_SRC src/datasketches/**/* src/datasketches/*)
 
   add_library(vertica-datasketches SHARED ${VERTICA_DATASKETCHES_SRC} ${VERTICA_SRC})
-  add_dependencies(vertica-datasketches datasketches)
 
   set_target_properties(vertica-datasketches PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS}")
   include_directories(${DATASKETCHES_INCLUDE})

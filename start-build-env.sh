@@ -10,7 +10,7 @@ errout() {
 }
 BUILDER_IMAGE="vertica-builder-ds:local"
 BUILDER_INSTANCE_NAME="vbuilder-datasketches"
-docker build -f ${_b_env} -t ${BUILDER_IMAGE} .
+docker build --network=host -f ${_b_env} -t ${BUILDER_IMAGE} .
 test -f ${VERTICA_SDK_PATH}/include/BuildInfo.h || errout 30 "Vertica SDK is missing. Put it in ${VERTICA_SDK_PATH} so that ${VERTICA_SDK_PATH}/include/BuildInfo.h exists"
 
 rm -rf build
