@@ -119,5 +119,14 @@ class ThetaSketchAggregateIntersectionFactory : public ThetaSketchAggregateFunct
     }
 };
 
+// LONG VARBINARY overload, see ThetaSketchAggregateUnionLongVarbinaryFactory.
+class ThetaSketchAggregateIntersectionLongVarbinaryFactory : public ThetaSketchAggregateIntersectionFactory {
+    virtual void getPrototype(ServerInterface &srvfloaterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
+        argTypes.addLongVarbinary();
+        returnType.addVarbinary();
+    }
+};
+
 RegisterFactory(ThetaSketchAggregateIntersectionFactory);
+RegisterFactory(ThetaSketchAggregateIntersectionLongVarbinaryFactory);
 

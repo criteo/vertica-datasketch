@@ -53,4 +53,15 @@ class ThetaSketchGetEstimateFactory : public ScalarFunctionFactory {
     }
 };
 
+// LONG VARBINARY overload, see ThetaSketchAggregateUnionLongVarbinaryFactory.
+class ThetaSketchGetEstimateLongVarbinaryFactory : public ThetaSketchGetEstimateFactory {
+    virtual void getPrototype(ServerInterface &interface,
+                              ColumnTypes &argTypes,
+                              ColumnTypes &returnType) {
+        argTypes.addLongVarbinary();
+        returnType.addFloat();
+    }
+};
+
 RegisterFactory(ThetaSketchGetEstimateFactory);
+RegisterFactory(ThetaSketchGetEstimateLongVarbinaryFactory);

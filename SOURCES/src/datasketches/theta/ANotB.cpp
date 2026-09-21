@@ -53,4 +53,18 @@ class ThetaSketchANotBFactory : public ThetaSketchScalarFunctionFactory {
     }
 };
 
+// LONG VARBINARY overload, see ThetaSketchAggregateUnionLongVarbinaryFactory.
+// Mixed (VARBINARY, LONG VARBINARY) calls resolve here through the implicit
+// VARBINARY -> LONG VARBINARY widening.
+class ThetaSketchANotBLongVarbinaryFactory : public ThetaSketchANotBFactory {
+    virtual void getPrototype(ServerInterface &interface,
+                              ColumnTypes &argTypes,
+                              ColumnTypes &returnType) {
+        argTypes.addLongVarbinary();
+        argTypes.addLongVarbinary();
+        returnType.addVarbinary();
+    }
+};
+
 RegisterFactory(ThetaSketchANotBFactory);
+RegisterFactory(ThetaSketchANotBLongVarbinaryFactory);
