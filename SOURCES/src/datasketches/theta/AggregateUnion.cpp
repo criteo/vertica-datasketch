@@ -86,5 +86,16 @@ class ThetaSketchAggregateUnionFactory : public ThetaSketchAggregateFunctionFact
     }
 };
 
+// Same aggregate, declared over LONG VARBINARY: Vertica does not implicitly
+// narrow LONG VARBINARY to VARBINARY when resolving UDx signatures, so callers
+// with a LONG VARBINARY sketch column need their own prototype.
+class ThetaSketchAggregateUnionLongVarbinaryFactory : public ThetaSketchAggregateUnionFactory {
+    virtual void getPrototype(ServerInterface &srvfloaterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
+        argTypes.addLongVarbinary();
+        returnType.addVarbinary();
+    }
+};
+
 RegisterFactory(ThetaSketchAggregateUnionFactory);
+RegisterFactory(ThetaSketchAggregateUnionLongVarbinaryFactory);
 
